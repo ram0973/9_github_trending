@@ -6,7 +6,6 @@ import sys
 import requests
 from cachecontrol import CacheControl
 from cachecontrol.caches import FileCache
-from requests import ConnectionError, HTTPError, Timeout, TooManyRedirects
 from os.path import join, dirname
 from dotenv import load_dotenv
 
@@ -35,17 +34,17 @@ def handle_requests_library_exceptions(decorated):
     def decorator(*args, **kwargs):
         try:
             return decorated(*args, **kwargs)
-        except ConnectionError:
+        except requests.ConnectionError:
             print('Ошибка сетевого соединения')
             exit(1)
-        except HTTPError as e:
+        except requests.HTTPError as e:
             print('Сервер вернул неудачный код статуса ответа: %s %i' %
                   (e.response.reason, e.response.status_code))
             exit(1)
-        except Timeout:
+        except requests.Timeout:
             print('Вышло время ожидания ответа от сервера')
             exit(1)
-        except TooManyRedirects:
+        except requests.TooManyRedirects:
             print('Слишком много редиректов')
             exit(1)
 
